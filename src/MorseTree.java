@@ -1,6 +1,7 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.*;;
+import java.util.*;
 /**
  * MorseTree.java
  * CSSSKL 162 Binary Search Tree Lab
@@ -16,115 +17,196 @@ import java.util.*;;
  * 
  */
 public class MorseTree {
-    //TODO: data member called "root" goes here
-    
-    
-    //TODO: Complete constructor
-    public MorseTree() {
-       
-		//first, open data.txt, add each line to the tree
+	private TreeNode<Character> root;
+
+	/**
+	 * 
+	 */
+	public MorseTree() {
 		Scanner fin;
 		try {
-			//for each line in the file, 
-			//  get the letter(char) and the Morse string
-			//  call add() with this data
-			//  print out the letter and Morse string here for debugging
-		
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			fin = new Scanner(new FileInputStream("data.txt"));
+
+			while(fin.hasNext()) {
+				String fileLine = fin.nextLine();
+				String[] morseCodes = fileLine.split(" ");
+				add(morseCodes[1], morseCodes[0].charAt(0));
+			}
+		}catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
-    
-    
-    public void add(String morseStr, char letter) {
-        root = insertInSubtree(morseStr, letter, root);
-    }
-    
-    //TODO: recursively complete this function.  It's only a few characters different from findInSubtree()
-	private TreeNode<Character> insertInSubtree(String morseStr, char letter, TreeNode subtree) {
-		//base case 1 : subtree is null
-		//base case 2 : morseStr is of length 0
-		//recursive case 1: the first char in morseStr is a '.', so recursively traverse tree
-		//recursive case 2: the first char in the morseStr is a '-', so recurse accordingly
-		
-		return subtree;  //always the last line, always return the node you are working on
+	/**
+	 * @param morseStr
+	 * @param letter
+	 */
+	public void add(String morseStr, char letter) {
+		root = insertInSubtree(morseStr, letter, root);
 	}
-    
-    public Character translate(String morseStr) {
-        return findInSubtree(morseStr, root);
-    }
-    
-    //TODO: recursively complete this function.  Very similar to insertInSubtree()
-	private Character findInSubtree(String morseStr, TreeNode subtree) {
-		//base case 1 : subtree is null 
-		//base case 2 : morseStr is of length 0
-		//recursive case 1: the first char in morseStr is a '.', so recursively traverse tree
-		//recursive case 2: the first char in the morseStr is a '-', so re-curse accordingly
-		return null;  //remove this
+
+	/**
+	 * @param morseStr
+	 * @param letter
+	 * @param subtree
+	 * @return - 
+	 */
+	private TreeNode<Character> insertInSubtree(String morseStr, char letter, TreeNode<Character> subtree) {
+		if(subtree == null) {
+			subtree = new TreeNode<Character>(letter, null, null);
+			return subtree;
+		}else if(morseStr.length() == 0) {
+			return null;
+		}else if(morseStr.charAt(0) == '.'){
+			subtree.right = insertInSubtree(morseStr.substring(1), letter, subtree.right);
+			subtree.right = new TreeNode<Character>(letter,subtree,null);
+			System.out.println("added " + letter + " to the tree");
+			return subtree.right;
+		}else{
+			subtree.left = insertInSubtree(morseStr.substring(1), letter, subtree.left);
+			subtree.left = new TreeNode<Character>(letter,null,subtree);
+			System.out.println("added " + letter + " to the tree");
+			return subtree.left;
+		}
 	}
-    
-    //TODO: Non-recursive function that calls other (recursive) functions
+
+	/**
+	 * @param morseStr
+	 * @return
+	 */
+	public Character translate(String morseStr) {
+		return findInSubtree(morseStr, root);
+	}
+
+	/**
+	 * @param morseStr
+	 * @param subtree
+	 * @return
+	 */
+	private Character findInSubtree(String morseStr, TreeNode<Character> subtree) {
+		if(subtree == null){
+			return null;
+		}else if(morseStr.length() == 0){
+			return (Character) subtree.data;
+		}else if(morseStr.charAt(0) == '.'){
+			return findInSubtree(morseStr.substring(1), subtree.right);
+		}else{
+			return findInSubtree(morseStr.substring(1), subtree.left);
+		}
+	}
+
+	/**
+	 * @param tokens
+	 * @return
+	 */
 	public String translateString(String tokens) {
-		String retVal = "";
-		//build a scanner here using tokens as input
-		//iterate over the tokens calling translate on each token (substring separated by a space)
-		//concat these characters and return them
-		
+		String retVal = " ";
+		Scanner newLine = new Scanner(tokens);
+		while(newLine.hasNext()){
+			String morseStr = newLine.next();
+			retVal += translate(morseStr);
+		}
 		return retVal;
 	}
-	
-    public String toMorseCode(Character c) {
-        .
-        //walk the tree looking for the TreeNode with the char c in it
-            //preorder walk?
-            //inorder walk?
-            //postorder walk?
-        
-        //when you've found the char c, report the path from the root to the node
-        //and build the morse code by adding a "." when you go right, "-" when you go left
-        return new String("You wish.");
-    }
-    public String toString() {
-        return inorderWalk();
-    }
-    private String inorderWalk() {  
-        
-        return new String("Another wish.");
-    }  
-    
-    public static void main(String[] args) {
-        MorseTree mt = new MorseTree();  //builds our tree using data from a file
 
-        //System.out.println(mt.translate("..."));  //prints out S
-        //System.out.println(mt.translate("---"));  //prints out O
-        //System.out.println(mt.translate(".......-"));  //prints out null
-        
-        //System.out.println(mt.translateString("... --- ..."));  //SOS
-        //System.out.println(mt.toMorseCode('S'));  //find where we are in the tree, remember path to root
-    }
+	/**
+	 * @param c
+	 * @return
+	 */
+	public String toMorseCode(Character c) {
 
-    // Inner class to create the linked structure
-    private class TreeNode<Character> {
-        
-        Object data;     // holds a given node’s data
-        TreeNode right;
-        TreeNode left;
-        
-        public TreeNode() {
-            this.data = null;
-            this.right = null;
-            this.left = null;
-        }
-        
-        public void setRight(TreeNode rightNode) {
-            this.right = rightNode;
-        }
-        
-         public void setLeft(TreeNode leftNode) {
-            this.left = leftNode;
-        }
-            
-    }
+		//walk the tree looking for the TreeNode with the char c in it
+		//preorder walk?
+		//inorder walk?
+		//postorder walk?
+
+		//when you've found the char c, report the path from the root to the node
+		//and build the morse code by adding a "." when you go right, "-" when you go left
+		return new String("You wish.");
+	}
+
+	/***/
+	public String toString() {
+		return inorderWalk(root);
+	}
+
+	/**
+	 * @param subtree 
+	 * @return
+	 */
+	private String inorderWalk(TreeNode<Character> subtree) {  
+		String retVal = "";
+		if(subtree != null) {
+			inorderWalk(subtree.left);
+			retVal += subtree.data.toString() + " ";
+			inorderWalk(subtree.right);
+			retVal += subtree.data.toString();
+		}
+		return retVal;
+	}
+
+	public static void main(String[] args) {
+		MorseTree mt = new MorseTree();  //builds our tree using data from a file
+		//System.out.println(mt.toString());
+		System.out.println(mt.translate("..."));  //prints out S
+		System.out.println(mt.translate("---"));  //prints out O
+		System.out.println(mt.translate(".......-"));  //prints out null
+
+		System.out.println(mt.translateString("... --- ..."));  //SOS
+		System.out.println(mt.toMorseCode('S'));  //find where we are in the tree, remember path to root
+	}
+
+	/**
+	 * @author Ian Bryan
+	 * @version Dec 10th 2018
+	 * @param <Character> - 
+	 * 
+	 * Inner class to create the linked structure>
+	 */
+	private class TreeNode<Character> {
+
+		/**
+		 * Inner class data members.
+		 * */
+		Object data;
+		TreeNode right;
+		TreeNode left;
+
+		/**
+		 * Constructor that takes no arguments. Overloads default, no argument constructor.
+		 * Sets all inner class data variables to null;
+		 * */
+		public TreeNode() {
+			this.data = null;
+			this.right = null;
+			this.left = null;
+		}
+
+		/**
+		 * @param newData - An object container for a piece of data.
+		 * @param newLeft - A node with a data value less than the previous.
+		 * @param newRight - A node with data value greater than the previous.
+		 * 
+		 * Constructor with three parameters that are data to add to any newly constructed subtrees.
+		 * */
+		public TreeNode(Object newData, TreeNode<Character> newLeft, TreeNode<Character> newRight) {
+			data = newData;
+			left = newLeft;
+			right = newRight;
+		}
+
+		/**
+		 * @param rightNode - 
+		 * */
+		public void setRight(TreeNode rightNode) {
+			this.right = rightNode;
+		}
+
+		/**
+		 * @param leftNode - 
+		 * */
+		public void setLeft(TreeNode leftNode) {
+			this.left = leftNode;
+		}
+	}
 }
