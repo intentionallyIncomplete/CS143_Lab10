@@ -96,11 +96,6 @@ public class CharTree {
 		}                    //else do nothing. Empty tree has nothing to display.
 	}
 
-        }
-        
-     private static void showElementsInSubtree(TreeNode subTreeRoot) { //Uses inorder traversal.
-         if (subTreeRoot != null) {
-             
 	public static void main(String[] args) {
 		CharTree tree = new CharTree();
 		tree.add('c');
