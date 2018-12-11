@@ -1,7 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;;
-/*
+/**
  * MorseTree.java
  * CSSSKL 162 Binary Search Tree Lab
  * Author: Rob Nash
@@ -15,7 +15,6 @@ import java.util.*;;
  * calling add() for each {letter, morseCodeStr} pair.
  * 
  */
-
 public class MorseTree {
     //TODO: data member called "root" goes here
     
